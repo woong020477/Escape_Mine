@@ -33,6 +33,5 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		isFalling = Movement->IsFalling();
 		ZSpeed = Movement->Velocity.Z;
 		Iscrouch = Movement->IsCrouching();
-		IsRunning=
 	}
 }
