@@ -11,6 +11,7 @@ AMyPlayer::AMyPlayer()
 {
     PrimaryActorTick.bCanEverTick = true;
     IsSprinting = false;
+    IsCrouch = false;
 
     // 스켈레톤 메시 가져오기
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Survival_Character/Meshes/SK_Survival_Character.SK_Survival_Character'"));
@@ -26,6 +27,10 @@ AMyPlayer::AMyPlayer()
     SpringArmComp->SetRelativeLocation(FVector(0, 70, 90));
     SpringArmComp->TargetArmLength = 400;
     SpringArmComp->bUsePawnControlRotation = true;
+    /*카메라 렉 설정 (앉기 시 카메라가 자연스럽게 내려옴 필요 시 주석처리 o)*/
+    SpringArmComp->bEnableCameraLag = true;
+    SpringArmComp->bEnableCameraRotationLag = true;
+    SpringArmComp->CameraLagSpeed = CameraLagSpeed;
 
     // 카메라 컴포넌트 장착
     CamComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CamComp"));
@@ -34,6 +39,13 @@ AMyPlayer::AMyPlayer()
 
     // 플레이어 회전
     bUseControllerRotationYaw = true;
+
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimiInstance(TEXT("/Game/Animations/ABP_MyPlayerAni.ABP_MyPlayerAni_C"));
+
+    if (AnimiInstance.Class)
+    {
+        GetMesh()->SetAnimInstanceClass(AnimiInstance.Class);                                       //해당 캐릭터의 애니메이션 클래스가 없을 시 자동 적용
+    }
 }
 
 void AMyPlayer::BeginPlay()
@@ -116,6 +128,7 @@ void AMyPlayer::StartCrouch(const FInputActionValue& inputValue) //앉기
 {
     if (!bIsCrouched) 
     {
+        IsCrouch = true;
         Crouch(); 
     }
 }
@@ -124,6 +137,7 @@ void AMyPlayer::StopCrouch(const FInputActionValue& inputValue) //앉아서 걷기
 {
     if (bIsCrouched) 
     {
+        IsCrouch = false;
         UnCrouch(); 
     }
 }

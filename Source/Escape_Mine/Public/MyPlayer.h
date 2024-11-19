@@ -60,6 +60,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* InputAction_Crouch;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Crouch")
+    bool IsCrouch;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sprint")
     bool IsSprinting;
 
@@ -73,6 +76,11 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* InputAction_Sprint;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+    float CameraLagSpeed = 20.0f;  // 카메라 랙 속도 조절
+
+
 
 
     void Move(const struct FInputActionValue& inputValue);
