@@ -5,6 +5,10 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h" 
+#include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 
 AMyPlayer::AMyPlayer()
@@ -24,7 +28,7 @@ AMyPlayer::AMyPlayer()
     // 스프링 암 장착
     SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
     SpringArmComp->SetupAttachment(RootComponent);
-    SpringArmComp->SetRelativeLocation(FVector(0, 70, 90));
+    SpringArmComp->SetRelativeLocation(FVector(0, 0, 90));
     SpringArmComp->TargetArmLength = 400;
     SpringArmComp->bUsePawnControlRotation = true;
     /*카메라 렉 설정 (앉기 시 카메라가 자연스럽게 내려옴 필요 시 주석처리 o)*/
@@ -37,8 +41,17 @@ AMyPlayer::AMyPlayer()
     CamComp->SetupAttachment(SpringArmComp);
     CamComp->bUsePawnControlRotation = false;
 
-    // 플레이어 회전
-    bUseControllerRotationYaw = true;
+
+    CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
+    CapsuleComp->SetupAttachment(GetMesh(), TEXT("Hand_r"));
+    CapsuleComp->SetRelativeLocation(FVector(-10, 3, 34));
+
+    StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+    StaticMesh->SetupAttachment(CapsuleComp);
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Scene_OldMine/Assets/Megascans/3D_Assets/His_Med_Tools_Pickaxe_Metal_Old_03"));
+    StaticMesh->SetStaticMesh(MeshAsset.Object);
+
+
 
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimiInstance(TEXT("/Game/Animations/ABP_MyPlayerAni.ABP_MyPlayerAni_C"));
 
