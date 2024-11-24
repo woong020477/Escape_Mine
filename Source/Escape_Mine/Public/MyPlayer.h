@@ -90,7 +90,7 @@ public:
     
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
     int32 comboCnt;
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
     bool IsAttacking;
 
 

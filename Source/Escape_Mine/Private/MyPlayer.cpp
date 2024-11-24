@@ -49,9 +49,11 @@ AMyPlayer::AMyPlayer()
     CapsuleComp->SetRelativeLocation(FVector(-27.81f, 1.7f, 24.5f));
 
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-    StaticMesh->SetupAttachment(CapsuleComp);
+    StaticMesh->SetupAttachment(GetMesh(), TEXT("Hand_r"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Scene_OldMine/Assets/Megascans/3D_Assets/His_Med_Tools_Pickaxe_Metal_Old_03"));
     StaticMesh->SetStaticMesh(MeshAsset.Object);
+    StaticMesh->SetRelativeLocation(FVector(-44.24f, 3.54f, 31.8f));
+    StaticMesh->SetRelativeRotation(FRotator(0, 50, 0));
 
 
 
@@ -67,7 +69,7 @@ void AMyPlayer::BeginPlay()
 {
     Super::BeginPlay();
 
-    
+
     // Input Mapping Context 추가
     auto PlayerController = Cast<APlayerController>(Controller);
     if (PlayerController)
@@ -86,7 +88,7 @@ void AMyPlayer::Tick(float DeltaTime)
 
     PlayerMove();
 }
-void AMyPlayer::PlayerMove()         
+void AMyPlayer::PlayerMove()
 {
     /*FVector P0 = GetActorLocation();
     FVector vt = direction * walkSpeed * DeltaTime;
@@ -94,9 +96,12 @@ void AMyPlayer::PlayerMove()
     SetActorLocation(P);                                기초 등속운동 구현*/
 
     //플레이어 이동 처리
-    direction = FTransform(GetControlRotation()).TransformVector(direction);
-    AddMovementInput(direction);
-    direction = FVector::ZeroVector;
+    if (!IsAttacking) 
+    {
+        direction = FTransform(GetControlRotation()).TransformVector(direction);
+        AddMovementInput(direction);
+        direction = FVector::ZeroVector;
+    }
 }
 
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -127,7 +132,7 @@ void AMyPlayer::Turn(const FInputActionValue& InputValue) // 카메라 턴 (Yaw)
 void AMyPlayer::LookUp(const FInputActionValue& InputValue) //카메라 턴 (Pitch)
 {
     float Value = InputValue.Get<float>();
-    AddControllerPitchInput(Value); 
+    AddControllerPitchInput(Value);
 }
 
 void AMyPlayer::Move(const struct FInputActionValue& inputValue)  //움직임
@@ -136,46 +141,61 @@ void AMyPlayer::Move(const struct FInputActionValue& inputValue)  //움직임
     direction.X = value.X;
     direction.Y = value.Y;
 }
-void AMyPlayer::Input_Jump(const struct FInputActionValue& inputValue) 
+void AMyPlayer::Input_Jump(const struct FInputActionValue& inputValue)
 {
-    Jump();
+    if (!IsAttacking) 
+    {
+        Jump();
+    }
 }
 void AMyPlayer::StartCrouch(const FInputActionValue& inputValue) //앉기
 {
-    if (!bIsCrouched) 
+    if (!IsAttacking) 
     {
-        IsCrouch = true;
-        Crouch(); 
+        if (!bIsCrouched)
+        {
+            IsCrouch = true;
+            Crouch();
+        }
     }
 }
 
 void AMyPlayer::StopCrouch(const FInputActionValue& inputValue) //앉아서 걷기
 {
-    if (bIsCrouched) 
+    if (!IsAttacking) 
     {
-        IsCrouch = false;
-        UnCrouch(); 
+        if (bIsCrouched)
+        {
+            IsCrouch = false;
+            UnCrouch();
+        }
     }
 }
 
 void AMyPlayer::StartSprint(const FInputActionValue& inputValue) //뛰기 시작
 {
-    IsSprinting = true;
-    GetCharacterMovement()->MaxWalkSpeed = SprintMaxSpeed;
+    if (!IsAttacking) 
+    {
+        IsSprinting = true;
+        GetCharacterMovement()->MaxWalkSpeed = SprintMaxSpeed;
+    }
 }
 void AMyPlayer::StopSprint(const FInputActionValue& inputValue) //걷기
 {
-    IsSprinting = false;
-    GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
+    if (!IsAttacking) 
+    {
+        IsSprinting = false;
+        GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
+    }
 }
 void AMyPlayer::Attack(const FInputActionValue& inputValue)
 {
     IsAttacking = true;
-    if (IsAttacking) 
+    if (IsAttacking)
     {
         comboCnt++;
         IsAttacking = false;
-        if (comboCnt == 2) 
+        if (comboCnt == 2)
         {
             comboCnt = 0;
         }
