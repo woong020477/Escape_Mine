@@ -16,6 +16,8 @@ AMyPlayer::AMyPlayer()
     PrimaryActorTick.bCanEverTick = true;
     IsSprinting = false;
     IsCrouch = false;
+    IsAttacking = false;
+    comboCnt = 0;
 
     // ½ºÄÌ·¹Åæ ¸Þ½Ã °¡Á®¿À±â
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Survival_Character/Meshes/SK_Survival_Character.SK_Survival_Character'"));
@@ -44,7 +46,7 @@ AMyPlayer::AMyPlayer()
 
     CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
     CapsuleComp->SetupAttachment(GetMesh(), TEXT("Hand_r"));
-    CapsuleComp->SetRelativeLocation(FVector(-10, 3, 34));
+    CapsuleComp->SetRelativeLocation(FVector(-27.81f, 1.7f, 24.5f));
 
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
     StaticMesh->SetupAttachment(CapsuleComp);
@@ -112,6 +114,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         PlayerInput->BindAction(InputAction_Crouch, ETriggerEvent::Completed, this, &AMyPlayer::StopCrouch);
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Triggered, this, &AMyPlayer::StartSprint);
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Completed, this, &AMyPlayer::StopSprint);
+        PlayerInput->BindAction(InputAction_Attack, ETriggerEvent::Started, this, &AMyPlayer::Attack);
     }
 }
 
@@ -164,4 +167,17 @@ void AMyPlayer::StopSprint(const FInputActionValue& inputValue) //°È±â
 {
     IsSprinting = false;
     GetCharacterMovement()->MaxWalkSpeed = DefaultMaxSpeed;
+}
+void AMyPlayer::Attack(const FInputActionValue& inputValue)
+{
+    IsAttacking = true;
+    if (IsAttacking) 
+    {
+        comboCnt++;
+        IsAttacking = false;
+        if (comboCnt == 2) 
+        {
+            comboCnt = 0;
+        }
+    }
 }

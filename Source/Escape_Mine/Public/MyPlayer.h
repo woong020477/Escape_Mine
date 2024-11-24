@@ -85,8 +85,13 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* StaticMesh;
-
-
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
+    UInputAction* InputAction_Attack;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+    int32 comboCnt;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+    bool IsAttacking;
 
 
     void Move(const struct FInputActionValue& inputValue);
@@ -97,4 +102,5 @@ public:
     void StopCrouch(const struct FInputActionValue& inputValue);
     void StartSprint(const struct FInputActionValue& inputValue);
     void StopSprint(const struct FInputActionValue& inputValue);
+    void Attack(const struct FInputActionValue& inputValue);
 };
