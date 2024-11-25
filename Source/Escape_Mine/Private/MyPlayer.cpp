@@ -17,7 +17,9 @@ AMyPlayer::AMyPlayer()
     IsSprinting = false;
     IsCrouch = false;
     IsAttacking = false;
+    IsPickaxeVisble = false;
     comboCnt = 0;
+    
 
     // 스켈레톤 메시 가져오기
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Survival_Character/Meshes/SK_Survival_Character.SK_Survival_Character'"));
@@ -55,7 +57,7 @@ AMyPlayer::AMyPlayer()
     StaticMesh->SetRelativeLocation(FVector(-44.24f, 3.54f, 31.8f));
     StaticMesh->SetRelativeRotation(FRotator(0, 50, 0));
 
-
+    StaticMesh->SetVisibility(IsPickaxeVisble);
 
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimiInstance(TEXT("/Game/Animations/ABP_MyPlayerAni.ABP_MyPlayerAni_C"));
 
@@ -80,6 +82,8 @@ void AMyPlayer::BeginPlay()
             Subsystem->AddMappingContext(InputMappingContext, 0);
         }
     }
+
+    
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -125,8 +129,10 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMyPlayer::Turn(const FInputActionValue& InputValue) // 카메라 턴 (Yaw)
 {
-    float Value = InputValue.Get<float>();
-    AddControllerYawInput(Value);
+    if (!IsAttacking) {
+        float Value = InputValue.Get<float>();
+        AddControllerYawInput(Value);
+    }
 }
 
 void AMyPlayer::LookUp(const FInputActionValue& InputValue) //카메라 턴 (Pitch)
@@ -190,8 +196,7 @@ void AMyPlayer::StopSprint(const FInputActionValue& inputValue) //걷기
 }
 void AMyPlayer::Attack(const FInputActionValue& inputValue)
 {
-    IsAttacking = true;
-    if (IsAttacking)
+    if (IsAttacking&& IsPickaxeVisble)
     {
         comboCnt++;
         IsAttacking = false;

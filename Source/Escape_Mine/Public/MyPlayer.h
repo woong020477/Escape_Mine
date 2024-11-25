@@ -92,6 +92,8 @@ public:
     int32 comboCnt;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
     bool IsAttacking;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+    bool IsPickaxeVisble;
 
 
     void Move(const struct FInputActionValue& inputValue);
