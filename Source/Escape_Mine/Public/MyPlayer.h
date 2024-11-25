@@ -95,6 +95,13 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
     bool IsPickaxeVisble;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HP")
+    int32 HP;
+
+
+    //테스트용
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* InputAction_Ouch; 
 
     void Move(const struct FInputActionValue& inputValue);
     void Turn(const FInputActionValue& InputValue);
@@ -105,4 +112,5 @@ public:
     void StartSprint(const struct FInputActionValue& inputValue);
     void StopSprint(const struct FInputActionValue& inputValue);
     void Attack(const struct FInputActionValue& inputValue);
+    void Ouch(const struct FInputActionValue& inputValue);
 };

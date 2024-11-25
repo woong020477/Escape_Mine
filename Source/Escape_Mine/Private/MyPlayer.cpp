@@ -19,7 +19,7 @@ AMyPlayer::AMyPlayer()
     IsAttacking = false;
     IsPickaxeVisble = false;
     comboCnt = 0;
-    
+    HP = 100;
 
     // ½ºÄÌ·¹Åæ ¸Þ½Ã °¡Á®¿À±â
     ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Survival_Character/Meshes/SK_Survival_Character.SK_Survival_Character'"));
@@ -124,6 +124,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Triggered, this, &AMyPlayer::StartSprint);
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Completed, this, &AMyPlayer::StopSprint);
         PlayerInput->BindAction(InputAction_Attack, ETriggerEvent::Started, this, &AMyPlayer::Attack);
+        PlayerInput->BindAction(InputAction_Ouch, ETriggerEvent::Triggered, this, &AMyPlayer::Ouch);
     }
 }
 
@@ -205,4 +206,8 @@ void AMyPlayer::Attack(const FInputActionValue& inputValue)
             comboCnt = 0;
         }
     }
+}
+void AMyPlayer::Ouch(const FInputActionValue& inputValue) 
+{
+    HP -= 10;
 }
