@@ -197,15 +197,6 @@ void AMyPlayer::StopSprint(const FInputActionValue& inputValue) //°È±â
 }
 void AMyPlayer::Attack(const FInputActionValue& inputValue)
 {
-    if (IsAttacking&& IsPickaxeVisble)
-    {
-        comboCnt++;
-        IsAttacking = false;
-        if (comboCnt == 2)
-        {
-            comboCnt = 0;
-        }
-    }
 }
 void AMyPlayer::Ouch(const FInputActionValue& inputValue) 
 {
