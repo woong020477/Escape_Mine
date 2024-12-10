@@ -124,7 +124,6 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Triggered, this, &AMyPlayer::StartSprint);
         PlayerInput->BindAction(InputAction_Sprint, ETriggerEvent::Completed, this, &AMyPlayer::StopSprint);
         PlayerInput->BindAction(InputAction_Attack, ETriggerEvent::Started, this, &AMyPlayer::Attack);
-        PlayerInput->BindAction(InputAction_Ouch, ETriggerEvent::Triggered, this, &AMyPlayer::Ouch);
     }
 }
 
@@ -197,8 +196,4 @@ void AMyPlayer::StopSprint(const FInputActionValue& inputValue) //°È±â
 }
 void AMyPlayer::Attack(const FInputActionValue& inputValue)
 {
-}
-void AMyPlayer::Ouch(const FInputActionValue& inputValue) 
-{
-    HP -= 10;
 }
